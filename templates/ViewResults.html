@@ -1,16 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-<div>
-    <h1>Existing Results</h1>
-    {% if existing_user %}
-        <p>Patient Name: {{ existing_user[3] }}</p>
-        <p>Date of Birth: {{ existing_user[0] }}</p>
-        <p>Email: {{ existing_user[1] }}</p>
-        <p>Gender: {{ existing_user[2] }}</p>
-        <p>Prediction 1: {{ existing_user[4] }}</p>
-        <p>Prediction 2: {{ existing_user[5] }}</p>
-    {% else %}
-        <p>No results found for the provided information.</p>
-    {% endif %}
+<style>
+    /* Add your custom CSS styles here */
+    /* Set full page background color */
+    body {
+        background-color: #cce8ff;
+    }
+</style>
+<div class="container">
+    <h3 class="text-center" style=" margin-bottom: 20px;">Existing Results</h3>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="result-table">
+                {% if existing_user %}
+                    <table class="table table-bordered"style="border-color: black;">
+                        <tbody>
+                            <tr>
+                                <th>Patient Name:</th>
+                                <td>{{ existing_user[3] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date of Birth:</th>
+                                <td>{{ existing_user[0] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>{{ existing_user[1] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Gender:</th>
+                                <td>{{ existing_user[2] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Standard CNN Prediction:</th>
+                                <td>{{ existing_user[4] }}</td>
+                            </tr>
+                            <tr>
+                                <th>EfficientNet B3 Prediction:</th>
+                                <td>{{ existing_user[5] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-center">No results found for the provided information.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
