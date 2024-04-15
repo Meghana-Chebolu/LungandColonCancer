@@ -15,9 +15,9 @@ import psycopg2
 
 conn = psycopg2.connect(
     dbname="sample_db",
-    user="",
-    password="",
-    host="",
+    user="app",
+    password="247E5Zb8p5uQ1Ca89rPxld9k",
+    host="informally-sought-honeybee.a1.pgedge.io",
     port="5432"
 )
 
@@ -42,6 +42,15 @@ async def ExistingResults(request: Request):
 @app.get("/Visualization")
 async def ExistingResults(request: Request):
     return templates.TemplateResponse("Visualization.html", {"request": request})
+
+@app.get("/AllData")
+async def get_data(
+    request: Request):
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Predictions")
+    data = cur.fetchall()
+    cur.close()
+    return data
 
 @app.get("/ExistingResults")
 async def ExistingResults(request: Request):
@@ -79,7 +88,7 @@ async def report(request: Request, file: UploadFile = File(...),patientName: str
     img_array = tf.expand_dims(img_array, 0)
     loaded_model = tf.keras.models.load_model('Lung.h5', compile=False)
     classes = {0: ('ca', 'colon adenocarcinoma'), 1: ('cb', 'colon benign'), 2: ('lac', 'lung adenocarcinoma'), 3: ('lb', 'lung benign'),
-            4: ('lscc', 'lung squamous cell carcinoma'), 5: ('nc', 'Free from Cancer')}
+            4: ('lscc', 'lung squamous cell carcinoma')}
     predictions = loaded_model.predict(img_array)
     max_prob = np.max(predictions)
     class_ind = np.argmax(predictions)
