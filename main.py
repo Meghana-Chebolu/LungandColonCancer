@@ -16,8 +16,8 @@ import psycopg2
 conn = psycopg2.connect(
     dbname="sample_db",
     user="app",
-    password="247E5Zb8p5uQ1Ca89rPxld9k",
-    host="informally-sought-honeybee.a1.pgedge.io",
+    password="",
+    host="",
     port="5432"
 )
 
