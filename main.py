@@ -17,7 +17,7 @@ conn = psycopg2.connect(
     dbname="sample_db",
     user="app",
     password="",
-    host="",
+    host="informally-sought-honeybee.a1.pgedge.io",
     port="5432"
 )
 
@@ -43,22 +43,18 @@ async def ExistingResults(request: Request):
 async def ExistingResults(request: Request):
     return templates.TemplateResponse("Visualization.html", {"request": request})
 
+
 @app.get("/AllData")
-async def get_data(
-    request: Request):
+async def get_all_data(request: Request):
     cur = conn.cursor()
     cur.execute("SELECT * FROM Predictions")
     data = cur.fetchall()
     cur.close()
-    return data
+    return templates.TemplateResponse("AllData.html", {"request": request, "data": data})
 
 @app.get("/ExistingResults")
 async def ExistingResults(request: Request):
     return templates.TemplateResponse("ExistingResults.html", {"request": request})
-
-@app.get("/AllData")
-async def ExistingResults(request: Request):
-    return templates.TemplateResponse("AllData.html", {"request": request})
 
 
 @app.get("/report")
