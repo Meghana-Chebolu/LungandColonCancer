@@ -18,9 +18,39 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.css">
   
+    <style>
+      .container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+      
+      .container img {
+        max-width: 50%; /* Adjust this value as needed */
+        height: auto;
+      }
+
+      .left-image {
+        margin-right: 10px; /* Adjust margin to add space between images */
+      }
+
+      .right-image {
+        margin-left: 10px; /* Adjust margin to add space between images */
+      }
+    </style>
+  
   </head>
   <body>
+
+    <!-- Heading for both images -->
+    <h3 style="text-align: left; margin-top: 20px; margin-bottom: 20px;margin-left: 50px;">Standard CNN Visualization</h3>
+
+    <!-- Confusion Matrix of Standard CNN Algorithm -->
+    <div class="container">
+      <img src="static/images/cm_standardcnn.jpg" alt="Standard CNN Confusion Matrix" class="left-image" style="width: 500px; height: 350px">
+      <img src="static/images/standardcnn_table.jpg" alt="Another Image" class="right-image" style="width: 600px; height: 350px">
+    </div>
     
     {% endblock %}   
   </body>
-</html> 
+</html>
