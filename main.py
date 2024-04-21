@@ -1,8 +1,10 @@
 from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 import base64
 import io
+import os
 import cv2
 import tensorflow as tf
 import numpy as np
@@ -130,15 +132,17 @@ def read_root(request: Request):
 
 
 
+
 @app.post("/get_gemini_completion")
 def get_gemini_completion(
-                            gemini_api_key: str =Form(...),
                             prompt: str = Form(...),  
                         ):
     try:
+        gemini_api_key = ""
         genai.configure(api_key = gemini_api_key)
         model = genai.GenerativeModel('gemini-pro')
         response = model.generate_content(prompt)
-        return {"response": response.text}
+        #return {"response": response.text}
+        return PlainTextResponse(content=response.text, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
