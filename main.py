@@ -105,26 +105,33 @@ async def report(request: Request, file: UploadFile = File(...),patientName: str
     img = image.resize((224, 224))
     img_array = tf.keras.preprocessing.image.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)
-    loaded_model = tf.keras.models.load_model('Lung.h5', compile=False)
-    classes = {0: ('ca', 'Colon Adenocarcinoma'), 1: ('cb', 'Colon Benign'), 2: ('lac', 'Lung Adenocarcinoma'), 3: ('Lb', 'Lung Benign'),
-            4: ('lscc', 'Lung Squamous Cell Carcinoma')}
-    predictions = loaded_model.predict(img_array)
-    max_prob = np.max(predictions)
-    class_ind = np.argmax(predictions)
-    class_name = classes[class_ind]
+    histo_nonhisto_classifier = tf.keras.models.load_model('histo_nonhisto_classifier.h5')
+    predict_classification = histo_nonhisto_classifier.predict(img_array)
+    if predict_classification[0][0] >0.5:
+        return templates.TemplateResponse("nonhistopathology.html", {"request": request})
 
-    img_base64 = base64.b64encode(s_img).decode('utf-8')
-    result = {
-        "img": img_base64,
-        "prediction": class_name
-        
-    }
-    efficient_net_pred = test_image(image)
-    cur = conn.cursor()
-    cur.execute("INSERT INTO Predictions (patient_name,date_of_birth,gender,email,prediction1,prediction2) VALUES (%s, %s,%s, %s,%s,%s)", (patientName,dob,gender,email,class_name[1],efficient_net_pred["Prediction"]))
-    conn.commit()
-    cur.close()
-    return templates.TemplateResponse("PatientForm.html", {"request": request,  "img": img_base64, "result":class_name[1], "enresult":efficient_net_pred['Prediction'],"patientName": patientName,"dob":dob, "gender":gender, "email":email})
+    else:
+
+        loaded_model = tf.keras.models.load_model('Lung.h5', compile=False)
+        classes = {0: ('ca', 'Colon Adenocarcinoma'), 1: ('cb', 'Colon Benign'), 2: ('lac', 'Lung Adenocarcinoma'), 3: ('Lb', 'Lung Benign'),
+                4: ('lscc', 'Lung Squamous Cell Carcinoma')}
+        predictions = loaded_model.predict(img_array)
+        max_prob = np.max(predictions)
+        class_ind = np.argmax(predictions)
+        class_name = classes[class_ind]
+
+        img_base64 = base64.b64encode(s_img).decode('utf-8')
+        result = {
+            "img": img_base64,
+            "prediction": class_name
+            
+        }
+        efficient_net_pred = test_image(image)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO Predictions (patient_name,date_of_birth,gender,email,prediction1,prediction2) VALUES (%s, %s,%s, %s,%s,%s)", (patientName,dob,gender,email,class_name[1],efficient_net_pred["Prediction"]))
+        conn.commit()
+        cur.close()
+        return templates.TemplateResponse("PatientForm.html", {"request": request,  "img": img_base64, "result":class_name[1], "enresult":efficient_net_pred['Prediction'],"patientName": patientName,"dob":dob, "gender":gender, "email":email})
 
 
 @app.get("/chat", response_class=HTMLResponse)
