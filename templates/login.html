@@ -1,1 +1,69 @@
+{% extends "Navbar.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 0 auto; /* Center the form horizontally */
+            margin-top: 50px; /* Add margin to the top */
+            text-align: center; /* Align form contents to center */
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px; /* Adjust the margin between heading and form */
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            text-align: left; /* Align label text to left */
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #0687f1;
+            color: #fff;
+            padding: 10px 40px; /* Increase padding to center the button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0687f1;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="margin-top: 20px;">Admin Login</h1>
+    <form action="/login" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username"><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password"><br><br>
+        <input type="submit" value="Login">
+    </form>
+{% endblock %}
+</body>
+</html>
 
