@@ -1,10 +1,9 @@
 from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.preprocessing.image import load_img
 import base64
 import io
+import cv2
 import tensorflow as tf
 import numpy as np
 from PIL import Image
@@ -82,37 +81,27 @@ async def report(request: Request, file: UploadFile = File(...),patientName: str
     # Preprocess the image
     img = image.resize((224, 224))
     img_array = tf.keras.preprocessing.image.img_to_array(img)
-    if img_array.shape[-1] == 4:
-        img_array = img_array[:, :, :3]
-    img_array = img_array / 255.0
-    img_array = tf.expand_dims(img_array, axis=0)
-    histo_nonhisto_classifier = tf.keras.models.load_model('histo_nonhisto_classifier.h5')
-    predict_classification = histo_nonhisto_classifier.predict(img_array)
-    if predict_classification[0][0] >0.5:
-        #print("Prediction: Non HistoPathological Image")
-        return templates.TemplateResponse("nonhistopathology.html", {"request": request})
+    img_array = tf.expand_dims(img_array, 0)
+    loaded_model = tf.keras.models.load_model('Lung.h5', compile=False)
+    classes = {0: ('ca', 'colon adenocarcinoma'), 1: ('cb', 'colon benign'), 2: ('lac', 'lung adenocarcinoma'), 3: ('lb', 'lung benign'),
+            4: ('lscc', 'lung squamous cell carcinoma')}
+    predictions = loaded_model.predict(img_array)
+    max_prob = np.max(predictions)
+    class_ind = np.argmax(predictions)
+    class_name = classes[class_ind]
 
-    else:
-        loaded_model = tf.keras.models.load_model('Lung.h5', compile=False)
-        classes = {0: ('ca', 'colon adenocarcinoma'), 1: ('cb', 'colon benign'), 2: ('lac', 'lung adenocarcinoma'), 3: ('lb', 'lung benign'),
-                4: ('lscc', 'lung squamous cell carcinoma')}
-        predictions = loaded_model.predict(img_array)
-        max_prob = np.max(predictions)
-        class_ind = np.argmax(predictions)
-        class_name = classes[class_ind]
+    img_base64 = base64.b64encode(s_img).decode('utf-8')
+    result = {
+        "img": img_base64,
+        "prediction": class_name
+        
+    }
 
-        img_base64 = base64.b64encode(s_img).decode('utf-8')
-        result = {
-            "img": img_base64,
-            "prediction": class_name
-            
-        }
-
-        cur = conn.cursor()
-        cur.execute("INSERT INTO Predictions (patient_name,date_of_birth,gender,email,prediction1,prediction2) VALUES (%s, %s,%s, %s,%s,%s)", (patientName,dob,gender,email,class_name[1],class_name[1]))
-        conn.commit()
-        cur.close()
-        return templates.TemplateResponse("PatientForm.html", {"request": request,  "img": img_base64, "result":class_name, "patientName": patientName,"dob":dob, "gender":gender, "email":email})
+    cur = conn.cursor()
+    cur.execute("INSERT INTO Predictions (patient_name,date_of_birth,gender,email,prediction1,prediction2) VALUES (%s, %s,%s, %s,%s,%s)", (patientName,dob,gender,email,class_name[1],class_name[1]))
+    conn.commit()
+    cur.close()
+    return templates.TemplateResponse("PatientForm.html", {"request": request,  "img": img_base64, "result":class_name, "patientName": patientName,"dob":dob, "gender":gender, "email":email})
 
 
 @app.get("/chat", response_class=HTMLResponse)
