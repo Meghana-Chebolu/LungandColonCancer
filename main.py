@@ -16,7 +16,7 @@ import psycopg2
 conn = psycopg2.connect(
     dbname="sample_db",
     user="app",
-    password="",
+    password="247E5Zb8p5uQ1Ca89rPxld9k",
     host="informally-sought-honeybee.a1.pgedge.io",
     port="5432"
 )
@@ -26,6 +26,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
+admin_credentials = {
+    "admin_username": "admin",
+    "admin_password": "admin_password"  # You should store this securely, not hard-coded
+}
 
 @app.get("/")
 async def dynamic_file(request: Request):
@@ -42,6 +46,22 @@ async def ExistingResults(request: Request):
 @app.get("/Visualization")
 async def ExistingResults(request: Request):
     return templates.TemplateResponse("Visualization.html", {"request": request})
+
+@app.get("/login")
+async def ExistingResults(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.post("/login")
+async def do_login(request: Request, username: str = Form(...), password: str = Form(...)):
+    if username == admin_credentials["admin_username"] and password == admin_credentials["admin_password"]:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM Predictions")
+        data = cur.fetchall()
+        cur.close()
+        return templates.TemplateResponse("AllData.html", {"request": request, "data": data})
+    else:
+        # Credentials are incorrect, raise HTTPException with 401 Unauthorized status code
+        raise HTTPException(status_code=401, detail="Incorrect username or password")
 
 
 @app.get("/AllData")
