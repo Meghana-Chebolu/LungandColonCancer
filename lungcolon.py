@@ -34,7 +34,7 @@ class EfficientNetB3Custom(nn.Module):
         x = self.custom_classifier(x)
         return x
 
-def test_image(image_path):
+def test_image(image):
     transform = transforms.Compose([
     transforms.Resize((300, 300)),
     transforms.ToTensor(),
@@ -54,7 +54,6 @@ def test_image(image_path):
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
-    image = Image.open(image_path)
     if image.mode != 'RGB':
         image = image.convert('RGB')
     device = torch.device("cpu")  # Set device to CPU
@@ -68,7 +67,7 @@ def test_image(image_path):
         output = model(transformed_image)
     index = torch.argmax(output)
     d = {}
-    class_names = ['colon_aca', 'colon_n', 'lung_aca', 'lung_n', 'lung_scc']
+    class_names = ['Colon Adenocarcinoma', 'Colon Benign', 'Lung Adenocarcinoma', 'Lung Benign', 'Lung Squamous Cell Carcinoma']
     d["Prediction"] =  class_names[index]
     print(d)
     return d

@@ -6,6 +6,8 @@ WORKDIR /app
 
 # Copy requirements.txt to the /app directory
 COPY requirements.txt /app/requirements.txt
+COPY nrequirements.txt /app/nrequirements.txt
+
 
 # Install system dependencies
 RUN  apt-get update && \
@@ -14,6 +16,7 @@ RUN  apt-get update && \
 
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install -r nrequirements.txt
 
 COPY . /app
 

@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
+from lungcolon import test_image
 import base64
 import io
 import os
@@ -105,8 +106,8 @@ async def report(request: Request, file: UploadFile = File(...),patientName: str
     img_array = tf.keras.preprocessing.image.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)
     loaded_model = tf.keras.models.load_model('Lung.h5', compile=False)
-    classes = {0: ('ca', 'colon adenocarcinoma'), 1: ('cb', 'colon benign'), 2: ('lac', 'lung adenocarcinoma'), 3: ('lb', 'lung benign'),
-            4: ('lscc', 'lung squamous cell carcinoma')}
+    classes = {0: ('ca', 'Colon Adenocarcinoma'), 1: ('cb', 'Colon Benign'), 2: ('lac', 'Lung Adenocarcinoma'), 3: ('Lb', 'Lung Benign'),
+            4: ('lscc', 'Lung Squamous Cell Carcinoma')}
     predictions = loaded_model.predict(img_array)
     max_prob = np.max(predictions)
     class_ind = np.argmax(predictions)
@@ -118,12 +119,12 @@ async def report(request: Request, file: UploadFile = File(...),patientName: str
         "prediction": class_name
         
     }
-
+    efficient_net_pred = test_image(image)
     cur = conn.cursor()
-    cur.execute("INSERT INTO Predictions (patient_name,date_of_birth,gender,email,prediction1,prediction2) VALUES (%s, %s,%s, %s,%s,%s)", (patientName,dob,gender,email,class_name[1],class_name[1]))
+    cur.execute("INSERT INTO Predictions (patient_name,date_of_birth,gender,email,prediction1,prediction2) VALUES (%s, %s,%s, %s,%s,%s)", (patientName,dob,gender,email,class_name[1],efficient_net_pred["Prediction"]))
     conn.commit()
     cur.close()
-    return templates.TemplateResponse("PatientForm.html", {"request": request,  "img": img_base64, "result":class_name, "patientName": patientName,"dob":dob, "gender":gender, "email":email})
+    return templates.TemplateResponse("PatientForm.html", {"request": request,  "img": img_base64, "result":class_name[1], "enresult":efficient_net_pred['Prediction'],"patientName": patientName,"dob":dob, "gender":gender, "email":email})
 
 
 @app.get("/chat", response_class=HTMLResponse)
