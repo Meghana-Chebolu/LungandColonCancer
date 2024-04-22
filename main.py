@@ -146,11 +146,12 @@ def get_gemini_completion(
                             prompt: str = Form(...),  
                         ):
     try:
-        gemini_api_key = ""
+        gemini_api_key = " "
         genai.configure(api_key = gemini_api_key)
         model = genai.GenerativeModel('gemini-pro')
         response = model.generate_content(prompt)
         #return {"response": response.text}
-        return PlainTextResponse(content=response.text, status_code=200)
+        cleaned_response = response.text.replace("*", "")
+        return PlainTextResponse(content=cleaned_response, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
