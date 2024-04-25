@@ -26,7 +26,7 @@
       }
       
       .container img {
-        max-width: 50%; /* Adjust this value as needed */
+        max-width: auto; /* Adjust this value as needed */
         height: auto;
       }
 
@@ -42,13 +42,27 @@
   </head>
   <body>
 
-    <!-- Heading for both images -->
-    <h3 style="text-align: left; margin-top: 20px; margin-bottom: 20px;margin-left: 50px;">Standard CNN Visualization</h3>
+    <!-- Heading for both images 
+    <h3 style="text-align: left; margin-top: 20px; margin-bottom: 20px;margin-left: 50px;">Standard CNN Visualization</h3>-->
 
     <!-- Confusion Matrix of Standard CNN Algorithm -->
+    <h3 style="text-align: center; margin-top: 20px; margin-bottom: 20px;margin-left: 50px;">Accuracy Plot of Models</h3>
+    <div style="text-align: center;">
+      <img src="static/images/barplot.jpg" alt="barplot" style="width: 500px; height: 350px margin-bottom:30px">
+  </div>
+  <h2 style="margin-bottom: 50px;"></h2>
+  
     <div class="container">
-      <img src="static/images/cm_standardcnn.jpg" alt="Standard CNN Confusion Matrix" class="left-image" style="width: 500px; height: 350px">
+      <div>
+        <h4 style="text-align: center;">StandardCNN Confusion Matrix </h4>
+        <img src="static/images/cm_standardcnn.jpg" alt="Standard CNN Confusion Matrix" class="left-image" style="width: 500px; height: 350px">
+      </div>
+      <div>
+        <h4 style="text-align: center;">EfficientNetB3 Confusion Matrix</h4>
+        <img src="static/images/cm_efficientnetb3.jpg" alt="Second Image" class="right-image" style="width: 500px; height: 350px">
+      </div>
     </div>
+
     
     {% endblock %}   
   </body>
