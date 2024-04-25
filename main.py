@@ -36,6 +36,10 @@ admin_credentials = {
 
 @app.get("/")
 async def dynamic_file(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.get("/base")
+async def Patient_form(request: Request):
     return templates.TemplateResponse("base.html", {"request": request})
 
 @app.get("/PatientForm")
@@ -57,11 +61,7 @@ async def ExistingResults(request: Request):
 @app.post("/login")
 async def do_login(request: Request, username: str = Form(...), password: str = Form(...)):
     if username == admin_credentials["admin_username"] and password == admin_credentials["admin_password"]:
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM Predictions")
-        data = cur.fetchall()
-        cur.close()
-        return templates.TemplateResponse("AllData.html", {"request": request, "data": data})
+        return templates.TemplateResponse("base.html", {"request": request})
     else:
         # Credentials are incorrect, raise HTTPException with 401 Unauthorized status code
         raise HTTPException(status_code=401, detail="Incorrect username or password")
