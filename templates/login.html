@@ -1,5 +1,3 @@
-{% extends "Navbar.html" %}
-{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #cee7f9;
             margin: 0;
             padding: 0;
         }
@@ -20,7 +18,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             width: 300px;
             margin: 0 auto; /* Center the form horizontally */
-            margin-top: 50px; /* Add margin to the top */
+            margin-top: 20px; /* Add margin to the top */
             text-align: center; /* Align form contents to center */
         }
         h1 {
@@ -55,7 +53,7 @@
     </style>
 </head>
 <body>
-    <h1 style="margin-top: 20px;">Admin Login</h1>
+    <h1 style="margin-top: 40px;">Login</h1>
     <form action="/login" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username"><br><br>
@@ -63,7 +61,7 @@
         <input type="password" id="password" name="password"><br><br>
         <input type="submit" value="Login">
     </form>
-{% endblock %}
+
 </body>
 </html>
 
