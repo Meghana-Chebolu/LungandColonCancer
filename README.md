@@ -1,1 +1,1 @@
-# Skin_disease_detection
+# Lung_Colon_Cancer_detection
